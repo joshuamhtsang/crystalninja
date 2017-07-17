@@ -11,7 +11,7 @@ print "Crystal Ninja - let's slice up some crystal!"
 
 class box:
 	def __init__(self, origin_in, x_length_in, y_length_in, z_length_in):
-		self.origin   = origin_in
+		self.origin   = np.array([0,0,0])
 		self.x_length = x_length_in
 		self.y_length = y_length_in
 		self.z_length = z_length_in
@@ -150,6 +150,7 @@ class box:
 		
 		np.savetxt('data_pretrim.dat', atom_positions)
 		
+		
 		# Trim away atoms that spawned outside the box dimensions.
 		
 		deletion_list = []
@@ -175,12 +176,12 @@ class box:
 		print "Deleting ", len(deletion_list), " atoms..."
 		#print deletion_list
 		atom_positions = np.delete(atom_positions,deletion_list,0)
-		
 		print "There are ", len(atom_positions), " atomic positions left."
 		
 		np.savetxt('data_posttrim.dat', atom_positions)
 		
-		# Trim away atoms that will overlap with existing atoms under PBC.
+		
+		# Trim away atoms that will overlap with existing atoms under PBC i.e those atoms right on the further out sides of the box.
 		
 		epsilon = 0.000001
 		
@@ -207,7 +208,6 @@ class box:
 		print "Deleting ", len(deletion_list), " atoms..."
 		#print deletion_list
 		atom_positions = np.delete(atom_positions,deletion_list,0)
-		
 		print "There are ", len(atom_positions), " atomic positions left."
 		
 		np.savetxt('data_posttrim.dat', atom_positions)
