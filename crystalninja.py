@@ -136,9 +136,9 @@ class box:
 					for m in range(0,self.num_basis_atoms):
 						tmpvec_atom = np.add(tmpvec,self.box_basis[m])
 						new_atom_position = np.array([[ tmpvec_atom[0], tmpvec_atom[1], tmpvec_atom[2] ]]) 
-						print "new_atom_position =", new_atom_position
+						#print "new_atom_position =", new_atom_position
 						atom_positions = np.append(atom_positions, new_atom_position, axis=0)
-						print "atom_positions: \n", atom_positions
+						#print "atom_positions: \n", atom_positions
 					
 					
 		
@@ -155,7 +155,7 @@ class box:
 		deletion_list = []
 		
 		for i in range(0,len(atom_positions)):
-			print "Testing atom with index ", i, " with position: ", atom_positions[i]
+			#print "Testing atom with index ", i, " with position: ", atom_positions[i]
 			x_position = atom_positions[i,0]
 			y_position = atom_positions[i,1]
 			z_position = atom_positions[i,2]
@@ -173,14 +173,12 @@ class box:
 			
 		
 		print "Deleting ", len(deletion_list), " atoms..."
-		print deletion_list
+		#print deletion_list
 		atom_positions = np.delete(atom_positions,deletion_list,0)
 		
 		print "There are ", len(atom_positions), " atomic positions left."
 		
 		np.savetxt('data_posttrim.dat', atom_positions)
-		
-		print atom_positions
 		
 		# Trim away atoms that will overlap with existing atoms under PBC.
 		
@@ -189,7 +187,7 @@ class box:
 		deletion_list = []
 		
 		for i in range(0,len(atom_positions)):
-			print "Testing atom with index ", i, " with position: ", atom_positions[i]
+			#print "Testing atom with index ", i, " with position: ", atom_positions[i]
 			x_position = atom_positions[i,0]
 			y_position = atom_positions[i,1]
 			z_position = atom_positions[i,2]
@@ -207,21 +205,20 @@ class box:
 			
 		
 		print "Deleting ", len(deletion_list), " atoms..."
-		print deletion_list
+		#print deletion_list
 		atom_positions = np.delete(atom_positions,deletion_list,0)
 		
 		print "There are ", len(atom_positions), " atomic positions left."
 		
 		np.savetxt('data_posttrim.dat', atom_positions)
 		
-		print atom_positions
-		
 		self.atom_positions = atom_positions
+		
 	
 	
 	
 	def print_lammps_format(self, filename):
-		print "Printing a LAMMPS-style data file."
+		print "Printing a LAMMPS-style data file.  This is useful for viewing by OVITO."
 		
 		ff = open(filename, 'w')
 		
@@ -243,7 +240,6 @@ class box:
 		
 		ff.close()
 		
-		print "Note: you can read in this data file into LAMMPS using: read_data data.txt"
 	
 	
 	
