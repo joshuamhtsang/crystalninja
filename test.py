@@ -2,7 +2,7 @@
 import numpy as np
 import crystalninja as cn
 
-origin = np.array([0.0,0.0,0.0])
+origin = np.array([1.0,2.0,3.0])
 
 
 ## lattice fcc ${latticeConstant} orient x 1 0 0 orient y 0 1 0 orient z 0 0 1
@@ -21,9 +21,9 @@ origin = np.array([0.0,0.0,0.0])
 #orientz = np.array([0.0, 0.0, 1.0])
 
 ## lattice fcc ${latticeConstant} orient x 1 0 0 orient y 0 1 1 orient z 0 -1 1
-Ncellx = 10
-Ncelly = 10
-Ncellz = 10
+Ncellx = 4
+Ncelly = 4
+Ncellz = 4
 lattice_constant = 1.0
 xdir_celllength = lattice_constant
 ydir_celllength = np.sqrt(2)*lattice_constant
