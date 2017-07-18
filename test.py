@@ -21,9 +21,9 @@ origin = np.array([0.0,0.0,0.0])
 #orientz = np.array([0.0, 0.0, 1.0])
 
 ## lattice fcc ${latticeConstant} orient x 1 0 0 orient y 0 1 1 orient z 0 -1 1
-Ncellx = 5
-Ncelly = 5
-Ncellz = 5
+Ncellx = 10
+Ncelly = 10
+Ncellz = 10
 lattice_constant = 1.0
 xdir_celllength = lattice_constant
 ydir_celllength = np.sqrt(2)*lattice_constant

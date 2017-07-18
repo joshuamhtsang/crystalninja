@@ -133,6 +133,9 @@ class box:
 					print "\n(i,j,k) = (", i, ", ", j, ", ", k, ")"
 					tmpvec = i*self.unitcellvector[0] + j*self.unitcellvector[1] + k*self.unitcellvector[2]
 					print "tmpvec =", tmpvec
+					# Don't place down atoms if tmpvec is too far from the positive octant.
+					if ( tmpvec[0]<(-2.5*a) or tmpvec[1]<(-2.5*a) or tmpvec[2]<(-2.5*a)):
+						continue
 					for m in range(0,self.num_basis_atoms):
 						tmpvec_atom = np.add(tmpvec,self.box_basis[m])
 						new_atom_position = np.array([[ tmpvec_atom[0], tmpvec_atom[1], tmpvec_atom[2] ]]) 
@@ -155,18 +158,20 @@ class box:
 		
 		deletion_list = []
 		
+		epsilon = 0.000001
+		
 		for i in range(0,len(atom_positions)):
 			#print "Testing atom with index ", i, " with position: ", atom_positions[i]
 			x_position = atom_positions[i,0]
 			y_position = atom_positions[i,1]
 			z_position = atom_positions[i,2]
-			if (x_position > self.x_length or x_position < 0.0):
+			if   (x_position > self.x_length+epsilon or x_position < 0.0-epsilon):
 				#print "Marking atom for deletion..."
 				deletion_list = np.append(deletion_list,int(i))
-			elif (y_position > self.y_length or y_position < 0.0):
+			elif (y_position > self.y_length+epsilon or y_position < 0.0-epsilon):
 				#print "Marking atom for deletion..."
 				deletion_list = np.append(deletion_list,int(i))
-			elif (z_position > self.z_length or z_position < 0.0):
+			elif (z_position > self.z_length+epsilon or z_position < 0.0-epsilon):
 				#print "Marking atom for deletion..."
 				deletion_list = np.append(deletion_list,int(i))
 			else:
