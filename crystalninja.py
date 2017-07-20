@@ -52,6 +52,11 @@ class box:
 			self.basis[2] = np.array([0.0, 0.5, 0.5])
 			self.basis[3] = np.array([0.5, 0.0, 0.5])
 			print self.basis
+		if (structure == "bcc"):
+			self.num_basis_atoms = 2
+			self.basis = np.zeros((self.num_basis_atoms,3))
+			self.basis[0] = np.array([0.0, 0.0, 0.0])
+			self.basis[1] = np.array([0.5, 0.5, 0.5])
 		else:
 			print "You haven't specified a valid crystal structure."
 			sys.exit(0)

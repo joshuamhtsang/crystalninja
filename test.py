@@ -50,11 +50,34 @@ orientz = np.array([ 0.0, -1.0, 1.0])
 #orienty = np.array([ 1.0, -1.0, 0.0])
 #orientz = np.array([ 1.0,  1.0, 1.0])
 
+
+## lattice bcc
+Ncellx = 3
+Ncelly = 3
+Ncellz = 3
+lattice_constant = 1.0
+orientx = np.array([ 1.0,  0.0, 0.0])
+orienty = np.array([ 0.0,  1.0, 1.0])
+orientz = np.array([ 0.0, -1.0, 1.0])
+pythagorasFactorx = np.linalg.norm(orientx)
+pythagorasFactory = np.linalg.norm(orienty)
+pythagorasFactorz = np.linalg.norm(orientz)
+xdir_celllength = lattice_constant*pythagorasFactorx
+ydir_celllength = lattice_constant*pythagorasFactory
+zdir_celllength = lattice_constant*pythagorasFactorz
+xdir_supercelllength = xdir_celllength*Ncellx
+ydir_supercelllength = ydir_celllength*Ncelly
+zdir_supercelllength = zdir_celllength*Ncellz
+
+
+
+
 ## Use Crystal Ninja.
 
 box1 = cn.box(origin,xdir_supercelllength,ydir_supercelllength,zdir_supercelllength)
-#box1 = cn.box(origin,1,1,1)
 
-box1.create_crystal("fcc", lattice_constant, orientx, orienty, orientz)
+
+#box1.create_crystal("fcc", lattice_constant, orientx, orienty, orientz)
+box1.create_crystal("bcc", lattice_constant, orientx, orienty, orientz)
 
 box1.print_lammps_format("out.dat")
