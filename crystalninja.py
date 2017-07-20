@@ -70,6 +70,10 @@ class box:
 		print "The orienty is set to: ", self.orienty
 		print "The orientz is set to: ", self.orientz
 
+		print "Checking that the provides orientx,y,z vectors are sane."
+		self.check_orientxyz_orthogonality()
+		self.check_orientxyz_righthanded()
+
 		print "Normalising the orientation vectors and filling rotation matrix..."
 
 		self.rotaterow = np.zeros((3,3))
@@ -186,6 +190,29 @@ class box:
 		atom_positions = self.translate_atom_positions(atom_positions,self.origin)
 
 		self.atom_positions = atom_positions
+
+
+	# Check orthogonality of the orientx, orienty and orientz vectors.
+	def check_orientxyz_orthogonality(self):
+		if ( np.dot(self.orientx,self.orienty) != 0 ):
+			print "!ERROR! orientx and orienty vectors must be orthogonal, but those provided are not. Please check! :)"
+			sys.exit(0)
+		if ( np.dot(self.orientx,self.orientz) != 0 ):
+			print "!ERROR! orientx and orientz vectors must be orthogonal, but those provided are not. Please check! :)"
+			sys.exit(0)
+		if ( np.dot(self.orienty,self.orientz) != 0 ):
+			print "!ERROR! orienty and orientz vectors must be orthogonal, but those provided are not. Please check! :)"
+			sys.exit(0)
+
+
+	# Check for right-handedness of the 3 orientx,y,z vectors.  x cross y must be in the same direction as z.
+	def check_orientxyz_righthanded(self):
+		xcrossy = np.cross(self.orientx,self.orienty)
+		print xcrossy
+		print np.dot(xcrossy,self.orientz)
+		if ( np.dot(xcrossy,self.orientz) < 0 ):
+			print "!ERROR! The orientx, orienty and orientz vectors do not form a right-handed set.  Please check!  On your right hand, index finger is x, middle finger is y and thumb is z."
+			sys.exit(0)
 
 
 
