@@ -296,6 +296,27 @@ class box:
 		return atom_positions
 
 
+	def translate_single_atom_position_withpbc(self, x_init, u):
+
+		x_final = np.zeros(3)
+		x_final = x_init + u
+
+		if ( x_final[0] > self.boxbound_xhi ):
+			x_final[0] -= self.x_length
+		if ( x_final[0] < self.boxbound_xlo ):
+			x_final[0] += self.x_length
+		if ( x_final[1] > self.boxbound_yhi ):
+			x_final[1] -= self.y_length
+		if ( x_final[1] < self.boxbound_ylo ):
+			x_final[1] += self.y_length
+		if ( x_final[2] > self.boxbound_zhi ):
+			x_final[2] -= self.z_length
+		if ( x_final[2] < self.boxbound_zlo ):
+			x_final[2] += self.z_length
+
+		return x_final
+
+
 
 	def introduce_screw_dipole(self, b, xypos_screw1, xypos_screw2):
 
@@ -324,9 +345,6 @@ class box:
 
 		print "theta1 and theta2 arrays successfully computed!"
 
-		#print theta1
-		#np.savetxt('theta1.dat',theta1)
-
 		# Compute the z-displacements.
 
 		u_z = np.zeros(num_atoms)
@@ -336,8 +354,12 @@ class box:
 
 		# Carry out the z-displacements.
 
+		u = np.zeros(3)
+
 		for i in range(0,num_atoms):
-			self.atom_positions[i,2] += u_z[i]
+			#self.atom_positions[i,2] += u_z[i]
+			u = np.array([0,0,u_z[i]])
+			self.atom_positions[i] = self.translate_single_atom_position_withpbc(self.atom_positions[i],u)
 
 		print "Screw dipole introduced."
 
@@ -357,8 +379,8 @@ class box:
 
 
 
-	def print_lammps_format(self, filename):
-		print "Printing a LAMMPS-style data file.  This is useful for viewing by OVITO."
+	def print_lammps_dump_format(self, filename):
+		print "Printing a LAMMPS-style dump file.  This is useful for viewing by OVITO."
 
 		ff = open(filename, 'w')
 
@@ -371,6 +393,31 @@ class box:
 		ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+'\n')
 		ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+'\n')
 		ff.write('ITEM: ATOMS id type x y z\n')
+		for i in range(0,len(self.atom_positions)):
+			xx = self.atom_positions[i,0]
+			yy = self.atom_positions[i,1]
+			zz = self.atom_positions[i,2]
+			ff.write(str(i)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
+
+
+		ff.close()
+
+
+	def print_lammps_data_format(self, filename):
+		print "Printing a LAMMPS-style data file.  This file can be read by LAMMPS for an initial configuration using the 'read_data' LAMMPS command."
+
+		ff = open(filename, 'w')
+
+		ff.write('MESSAGE FROM CRYSTAL NINJA: INSERT YOUR OWN COMMENT LINE HERE.\n')
+		ff.write('\n')
+		ff.write(str(len(self.atom_positions))+' atoms\n')
+		ff.write('1 atom types\n')
+		ff.write(str(self.boxbound_xlo)+' '+str(self.boxbound_xhi)+'xlo xhi'+'\n')
+		ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+'ylo yhi'+'\n')
+		ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+'zlo zhi'+'\n')
+		ff.write('\n')
+		ff.write(' Atoms\n')
+		ff.write('\n')
 		for i in range(0,len(self.atom_positions)):
 			xx = self.atom_positions[i,0]
 			yy = self.atom_positions[i,1]

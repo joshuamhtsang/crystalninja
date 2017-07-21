@@ -88,11 +88,13 @@ box1 = cn.box(origin,xdir_supercelllength,ydir_supercelllength,zdir_supercelllen
 #box1.create_crystal("fcc", lattice_constant, orientx, orienty, orientz)
 box1.create_crystal("bcc", lattice_constant, orientx, orienty, orientz)
 
-box1.print_lammps_format("out.dat")
+box1.print_lammps_dump_format("out.dat")
 
 ## Introduce a screw dislocation dipole.
 screw1_pos = np.array([5.71548,15.20265])
 screw2_pos = np.array([13.8804,15.20265])
 box1.introduce_screw_dipole(1,screw1_pos,screw2_pos)
 
-box1.print_lammps_format("out_screwdipole.dat")
+box1.print_lammps_dump_format("out_screwdipole.dat")
+
+box1.print_lammps_data_format("screwdipole.data")
