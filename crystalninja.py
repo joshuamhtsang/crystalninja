@@ -340,7 +340,7 @@ class box:
 			dy1 = self.atom_positions[i,1] - xypos_screw1[1]
 			dx2 = self.atom_positions[i,0] - xypos_screw2[0]
 			dy2 = self.atom_positions[i,1] - xypos_screw2[1]
-			theta1[i] = self.compute_theta(dx1,dy2)
+			theta1[i] = self.compute_theta(dx1,dy1)
 			theta2[i] = self.compute_theta(dx2,dy2)
 
 		print "theta1 and theta2 arrays successfully computed!"
@@ -352,6 +352,7 @@ class box:
 		for i in range(0,num_atoms):
 			u_z[i] = ( b * (theta1[i]-theta2[i]) ) / (2*np.pi)
 
+		np.savetxt("uz.dat",u_z)
 		# Carry out the z-displacements.
 
 		u = np.zeros(3)
@@ -397,7 +398,7 @@ class box:
 			xx = self.atom_positions[i,0]
 			yy = self.atom_positions[i,1]
 			zz = self.atom_positions[i,2]
-			ff.write(str(i)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
+			ff.write(str(i+1)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
 
 
 		ff.close()
@@ -422,7 +423,7 @@ class box:
 			xx = self.atom_positions[i,0]
 			yy = self.atom_positions[i,1]
 			zz = self.atom_positions[i,2]
-			ff.write(str(i)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
+			ff.write(str(i+1)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
 
 
 		ff.close()

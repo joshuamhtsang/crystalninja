@@ -63,7 +63,7 @@ origin = np.array([0.0,0.0,0.0])
 Ncellx = 8
 Ncelly = 19
 Ncellz = 3
-lattice_constant = 1.0
+lattice_constant = 2.856
 orientx = np.array([ 1.0,  1.0, -2.0])
 orienty = np.array([ -1.0,  1.0, 0.0])
 orientz = np.array([ 1.0,  1.0,  1.0])
@@ -91,9 +91,9 @@ box1.create_crystal("bcc", lattice_constant, orientx, orienty, orientz)
 box1.print_lammps_dump_format("out.dat")
 
 ## Introduce a screw dislocation dipole.
-screw1_pos = np.array([5.71548,15.20265])
-screw2_pos = np.array([13.8804,15.20265])
-box1.introduce_screw_dipole(1,screw1_pos,screw2_pos)
+screw1_pos = np.array([16.3234,43.4188])
+screw2_pos = np.array([39.6426,43.4188])
+box1.introduce_screw_dipole(2.856,screw1_pos,screw2_pos)
 
 box1.print_lammps_dump_format("out_screwdipole.dat")
 
