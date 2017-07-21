@@ -152,7 +152,10 @@ class box:
 					tmpvec = i*self.unitcellvector[0] + j*self.unitcellvector[1] + k*self.unitcellvector[2]
 					#print "tmpvec =", tmpvec
 					# Don't place down atoms if tmpvec is too far from the positive octant.
-					if ( tmpvec[0]<(-2.5*a) or tmpvec[1]<(-2.5*a) or tmpvec[2]<(-2.5*a)):
+					if ( tmpvec[0]<(-2.5*a) or tmpvec[1]<(-2.5*a) or tmpvec[2]<(-2.5*a) ):
+						continue
+					# Don't place down atoms if tmpvec is too far beyond the box boundaries.
+					if ( tmpvec[0]>(1.6*self.x_length) or tmpvec[1]>(1.6*self.y_length) or tmpvec[2]>(1.6*self.z_length) ):
 						continue
 					for m in range(0,self.num_basis_atoms):
 						tmpvec_atom = np.add(tmpvec,self.box_basis[m])
@@ -291,6 +294,66 @@ class box:
 		print "... Translation complete."
 
 		return atom_positions
+
+
+
+	def introduce_screw_dipole(self, b, xypos_screw1, xypos_screw2):
+
+		# Check that both dislocations have the same y-coordinate.  This is necessary because the cut between the two dislocations is defined as being parallel to the x-axis.
+		if (xypos_screw1[1] != xypos_screw2[1]):
+			print "!ERROR! When introducing a screw dislocation dipole, the y-coordinates of both dislocations must be the same."
+			sys.exit(0)
+
+		# Work out theta1 and theta2 arrays where:
+		#   (1) theta1 : The angles subtended between the positive x-direction and each atom's separation vector R from the dislocation line of screw 1.
+		#   (2) theta2 : The same thing as above but for screw 2.
+		# Look at Fig. 5.1 in Bulatov and Cai for a diagram.
+
+		num_atoms = len(self.atom_positions)
+
+		theta1 = np.zeros(num_atoms)
+		theta2 = np.zeros(num_atoms)
+
+		for i in range(0,num_atoms):
+			dx1 = self.atom_positions[i,0] - xypos_screw1[0]
+			dy1 = self.atom_positions[i,1] - xypos_screw1[1]
+			dx2 = self.atom_positions[i,0] - xypos_screw2[0]
+			dy2 = self.atom_positions[i,1] - xypos_screw2[1]
+			theta1[i] = self.compute_theta(dx1,dy2)
+			theta2[i] = self.compute_theta(dx2,dy2)
+
+		print "theta1 and theta2 arrays successfully computed!"
+
+		#print theta1
+		#np.savetxt('theta1.dat',theta1)
+
+		# Compute the z-displacements.
+
+		u_z = np.zeros(num_atoms)
+
+		for i in range(0,num_atoms):
+			u_z[i] = ( b * (theta1[i]-theta2[i]) ) / (2*np.pi)
+
+		# Carry out the z-displacements.
+
+		for i in range(0,num_atoms):
+			self.atom_positions[i,2] += u_z[i]
+
+		print "Screw dipole introduced."
+
+
+
+
+	def compute_theta(self,dx,dy):
+
+		tmp = 0.0
+
+		if ( dy > 0 ):
+			tmp = np.arctan2(dy,dx)
+		else:
+			tmp = np.arctan2(dy,dx) + 2*np.pi
+
+		return tmp
 
 
 
