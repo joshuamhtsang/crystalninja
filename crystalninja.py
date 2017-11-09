@@ -37,8 +37,12 @@ class box:
 		self.basis = np.array([[0, 0, 0]])
 		self.basis = np.delete(self.basis, 0, 0)
 
-
-
+		# Variables related to triclinic simulation cells (identical to LAMMPS' triclinic definitions)
+		self.triclinicFlag = False
+		self.tilt_xy = 0.0
+		self.tilt_xz = 0.0
+		self.tilt_yz = 0.0
+		
 
 	def create_crystal(self, structure, a, orientx_in, orienty_in, orientz_in):
 
@@ -337,9 +341,9 @@ class box:
 	def introduce_screw_dipole_in_xyplane(self, b, xypos_screw1, xypos_screw2):
 		# Introduce a screw dipole such that the line vectors are parallel to the z-axis and the cut-plane is parallel to the x-axis.  See Fig 5.1 of Bulatov and Cai.
 		
-		# Check that both dislocations have the same y-coordinate.  This is necessary because the cut between the two dislocations (the cut-plane) is defined as being parallel to the x-axis.
-		if (xypos_screw1[1] != xypos_screw2[1]):
-			print "!ERROR! When introducing a screw dislocation dipole, the y-coordinates of both dislocations must be the same."
+		# Check that both dislocations have the same x-coordinate.  This is necessary because the cut between the two dislocations (the cut-plane) is defined as being parallel to the x-axis.
+		if (xypos_screw1[0] != xypos_screw2[0]):
+			print "!ERROR! When introducing a screw dislocation dipole, the x-coordinates of both dislocations must be the same."
 			sys.exit(0)
 
 		# Work out theta1 and theta2 arrays where:
@@ -380,7 +384,7 @@ class box:
 			u = np.array([0,0,u_z[i]])
 			self.atom_positions[i] = self.translate_single_atom_position_withpbc(self.atom_positions[i],u)
 
-		print "Screw dipole introduced."
+		print "\nScrew dipole introduced.\n"
 
 
 
@@ -398,6 +402,16 @@ class box:
 
 
 
+	def setTiltFactors(self,xy,xz,yz):
+		self.triclinicFlag = True
+		self.tilt_xy = xy
+		self.tilt_xz = xz
+		self.tilt_yz = yz
+		
+
+
+
+
 	def print_lammps_dump_format(self, filename):
 		print "Printing a LAMMPS-style dump file.  This is useful for viewing by OVITO."
 
@@ -407,10 +421,16 @@ class box:
 		ff.write('0\n')
 		ff.write('ITEM: NUMBER OF ATOMS\n')
 		ff.write(str(len(self.atom_positions))+'\n')
-		ff.write('ITEM: BOX BOUNDS pp pp pp\n')
-		ff.write(str(self.boxbound_xlo)+' '+str(self.boxbound_xhi)+'\n')
-		ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+'\n')
-		ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+'\n')
+		if (self.triclinicFlag is True):
+			ff.write('ITEM: BOX BOUNDS xy xz yz pp pp pp\n')
+			ff.write(str(self.boxbound_xlo)+' '+str(self.boxbound_xhi)+' '+str(self.tilt_xy)+'\n')
+			ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+' '+str(self.tilt_xz)+'\n')
+			ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+' '+str(self.tilt_yz)+'\n')
+		else:
+			ff.write('ITEM: BOX BOUNDS pp pp pp\n')
+			ff.write(str(self.boxbound_xlo)+' '+str(self.boxbound_xhi)+'\n')
+			ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+'\n')
+			ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+'\n')
 		ff.write('ITEM: ATOMS id type x y z\n')
 		for i in range(0,len(self.atom_positions)):
 			xx = self.atom_positions[i,0]
@@ -431,9 +451,11 @@ class box:
 		ff.write('\n')
 		ff.write(str(len(self.atom_positions))+' atoms\n')
 		ff.write('1 atom types\n')
-		ff.write(str(self.boxbound_xlo)+' '+str(self.boxbound_xhi)+'xlo xhi'+'\n')
-		ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+'ylo yhi'+'\n')
-		ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+'zlo zhi'+'\n')
+		ff.write(str(self.boxbound_xlo)+' '+str(self.boxbound_xhi)+' xlo xhi'+'\n')
+		ff.write(str(self.boxbound_ylo)+' '+str(self.boxbound_yhi)+' ylo yhi'+'\n')
+		ff.write(str(self.boxbound_zlo)+' '+str(self.boxbound_zhi)+' zlo zhi'+'\n')
+		if (self.triclinicFlag is True):
+			ff.write(str(self.tilt_xy)+' '+str(self.tilt_xz)+' '+str(self.tilt_yz)+' xy xz yz'+'\n')
 		ff.write('\n')
 		ff.write(' Atoms\n')
 		ff.write('\n')
