@@ -94,7 +94,9 @@ box1.print_lammps_dump_format("lammpsOut.dat")
 ## Introduce a screw dislocation dipole.
 screw1_pos = np.array([16.3234,43.4188])
 screw2_pos = np.array([39.6426,43.4188])
-box1.introduce_screw_dipole(2.856,screw1_pos,screw2_pos)
+burgersVectorMagnitude = 0.5 * np.linalg.norm(np.array([1,1,1])) * lattice_constant
+print "The magnitude of the Burgers Vector is: ", burgersVectorMagnitude
+box1.introduce_screw_dipole_in_xyplane(burgersVectorMagnitude,screw1_pos,screw2_pos)
 
 box1.print_lammps_dump_format("lammpsOut_screwdipole.dat")
 

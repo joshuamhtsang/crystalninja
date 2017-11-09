@@ -5,7 +5,10 @@ import numpy as np
 
 print "Crystal Ninja - let's slice up some crystal!"
 
-
+print "You shouldn't be 'running' me i.e. $ python crystalninja.py"
+print "Instead, write a script that uses me as a library."
+print "You can try (if test.py is present):"
+print "$ python test.py"
 
 
 
@@ -331,9 +334,10 @@ class box:
 
 
 
-	def introduce_screw_dipole(self, b, xypos_screw1, xypos_screw2):
-
-		# Check that both dislocations have the same y-coordinate.  This is necessary because the cut between the two dislocations is defined as being parallel to the x-axis.
+	def introduce_screw_dipole_in_xyplane(self, b, xypos_screw1, xypos_screw2):
+		# Introduce a screw dipole such that the line vectors are parallel to the z-axis and the cut-plane is parallel to the x-axis.  See Fig 5.1 of Bulatov and Cai.
+		
+		# Check that both dislocations have the same y-coordinate.  This is necessary because the cut between the two dislocations (the cut-plane) is defined as being parallel to the x-axis.
 		if (xypos_screw1[1] != xypos_screw2[1]):
 			print "!ERROR! When introducing a screw dislocation dipole, the y-coordinates of both dislocations must be the same."
 			sys.exit(0)
@@ -366,6 +370,7 @@ class box:
 			u_z[i] = ( b * (theta1[i]-theta2[i]) ) / (2*np.pi)
 
 		np.savetxt("uz.dat",u_z)
+		
 		# Carry out the z-displacements.
 
 		u = np.zeros(3)
@@ -387,7 +392,7 @@ class box:
 		if ( dy > 0 ):
 			tmp = np.arctan2(dy,dx)
 		else:
-			tmp = np.arctan2(dy,dx) + 2*np.pi
+			tmp = np.arctan2(dy,dx) + 2.0*np.pi
 
 		return tmp
 
