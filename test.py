@@ -59,7 +59,8 @@ origin = np.array([0.0,0.0,0.0])
 # ydir_supercelllength = ydir_celllength*Ncelly
 # zdir_supercelllength = zdir_celllength*Ncellz
 
-## lattice bcc, orientation [1,0,0] [0,1,1] [0,1,1]
+## Problem 5.2.1 in Bulatov and Cai
+## lattice bcc, orientation [1,1,-2] [1,1,0] [1,1,1]
 Ncellx = 8
 Ncelly = 19
 Ncellz = 3
@@ -88,13 +89,13 @@ box1 = cn.box(origin,xdir_supercelllength,ydir_supercelllength,zdir_supercelllen
 #box1.create_crystal("fcc", lattice_constant, orientx, orienty, orientz)
 box1.create_crystal("bcc", lattice_constant, orientx, orienty, orientz)
 
-box1.print_lammps_dump_format("out.dat")
+box1.print_lammps_dump_format("lammpsOut.dat")
 
 ## Introduce a screw dislocation dipole.
 screw1_pos = np.array([16.3234,43.4188])
 screw2_pos = np.array([39.6426,43.4188])
 box1.introduce_screw_dipole(2.856,screw1_pos,screw2_pos)
 
-box1.print_lammps_dump_format("out_screwdipole.dat")
+box1.print_lammps_dump_format("lammpsOut_screwdipole.dat")
 
 box1.print_lammps_data_format("screwdipole.data")
