@@ -53,6 +53,7 @@ class box:
 			self.basis[3] = np.array([0.5, 0.0, 0.5])
 			print self.basis
 		elif (structure == "bcc"):
+			print "Initialising BCC basis atoms..."
 			self.num_basis_atoms = 2
 			self.basis = np.zeros((self.num_basis_atoms,3))
 			self.basis[0] = np.array([0.0, 0.0, 0.0])

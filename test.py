@@ -99,3 +99,11 @@ box1.introduce_screw_dipole(2.856,screw1_pos,screw2_pos)
 box1.print_lammps_dump_format("lammpsOut_screwdipole.dat")
 
 box1.print_lammps_data_format("screwdipole.data")
+
+
+
+
+
+
+
+
