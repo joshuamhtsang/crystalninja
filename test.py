@@ -112,8 +112,8 @@ box1.create_crystal("bcc", lattice_constant, orientx, orienty, orientz)
 box1.print_lammps_dump_format("lammpsOut.dat")
 
 ## Introduce a screw dislocation dipole.
-screw1_pos = np.array([16.3234,43.4188])
-screw2_pos = np.array([39.6426,43.4188])
+screw1_pos = np.array([19.185,27.98])
+screw2_pos = np.array([57.555,27.98])
 burgersVector = 0.5 * np.array([1,1,1]) * lattice_constant
 print "The Burgers Vector is: ", burgersVector
 burgersVectorMagnitude = np.linalg.norm(burgersVector)
