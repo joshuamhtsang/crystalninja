@@ -108,7 +108,7 @@ box1 = cn.box(origin,xdir_supercelllength,ydir_supercelllength,zdir_supercelllen
 
 #box1.create_crystal("fcc", lattice_constant, orientx, orienty, orientz)
 box1.create_crystal("bcc", lattice_constant, orientx, orienty, orientz)
-box1.setTiltFactors(0.0,6.0,0.0)
+#box1.setTiltFactors(0.0,6.0,0.0)
 box1.print_lammps_dump_format("lammpsOut.dat")
 
 ## Introduce a screw dislocation dipole.
@@ -118,7 +118,8 @@ burgersVector = 0.5 * np.array([1,1,1]) * lattice_constant
 print "The Burgers Vector is: ", burgersVector
 burgersVectorMagnitude = np.linalg.norm(burgersVector)
 print "The magnitude of the Burgers Vector is: ", burgersVectorMagnitude
-box1.introduce_screw_dipole_in_xyplane(burgersVectorMagnitude,screw1_pos,screw2_pos)
+#box1.introduce_screw_dipole_in_xyplane(burgersVectorMagnitude,screw1_pos,screw2_pos)
+box1.introduce_screw_dipole_general("y", burgersVectorMagnitude, screw1_pos, screw2_pos)
 #box1.setTiltFactors(0.0,0.0,0.0)
 
 box1.print_lammps_dump_format("lammpsOut_screwdipole.dat")

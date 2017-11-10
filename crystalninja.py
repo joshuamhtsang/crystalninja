@@ -386,7 +386,88 @@ class box:
 
 		print "\nScrew dipole introduced.\n"
 
+	
+	
+	def introduce_screw_dipole_general(self, cutplane, b, pos2d_screw1, pos2d_screw2):
+		
+		# pos2d_screw* are the 2D position of the screw dislocation cores in the (xy, yz, zx) planes for dipoles with cutplanes parallel to (x, y, z) directions.  The axes always obey the right-handed convention.
+		
+		if (cutplane == "x" or cutplane == "y" or cutplane == "z"):
+			print "\nYou are introducing a screw dipole with the cutplane parallel to the ", cutplane, " axis.\n"
+		else:
+			print "\nYou have't defined a valid cutplane for the screw dipole!  Please check and do so :)\n"
+			sys.exit(0)
+		
+		# Check that the pos2d_screw* coordinates are appropriate.
+		if (pos2d_screw1[1] != pos2d_screw2[1]):
+			print "!ERROR! When introducing a screw dislocation dipole parallel to the ", cutplane, " direction, the 2nd coordinate specified for the two screw dislocations must be identical."
+			print "Currently, the 2nd coordinates of the two screw dislocations are: ", pos2d_screw1[1], " and ", pos2d_screw2[1]
+			sys.exit(0)
+		
+		
+		# Work out theta1 and theta2 arrays where:
+		#   (1) theta1 : The angles subtended between the positive cutplane-direction and each atom's separation vector R from the dislocation line of screw 1.
+		#   (2) theta2 : The same thing as above but for screw 2.
+		# Look at Fig. 5.1 in Bulatov and Cai for a diagram.
 
+		num_atoms = len(self.atom_positions)
+
+		theta1 = np.zeros(num_atoms)
+		theta2 = np.zeros(num_atoms)
+
+		for i in range(0,num_atoms):
+			if (cutplane == "x"):
+				dx1 = self.atom_positions[i,0] - pos2d_screw1[0]
+				dy1 = self.atom_positions[i,1] - pos2d_screw1[1]
+				dx2 = self.atom_positions[i,0] - pos2d_screw2[0]
+				dy2 = self.atom_positions[i,1] - pos2d_screw2[1]
+				theta1[i] = self.compute_theta(dx1,dy1)
+				theta2[i] = self.compute_theta(dx2,dy2)
+			elif (cutplane == "y"):
+				dy1 = self.atom_positions[i,1] - pos2d_screw1[0]
+				dz1 = self.atom_positions[i,2] - pos2d_screw1[1]
+				dy2 = self.atom_positions[i,1] - pos2d_screw2[0]
+				dz2 = self.atom_positions[i,2] - pos2d_screw2[1]
+				theta1[i] = self.compute_theta(dy1,dz1)
+				theta2[i] = self.compute_theta(dy2,dz2)
+			elif (cutplane == "z"):
+				dz1 = self.atom_positions[i,2] - pos2d_screw1[0]
+				dx1 = self.atom_positions[i,0] - pos2d_screw1[1]
+				dz2 = self.atom_positions[i,2] - pos2d_screw2[0]
+				dx2 = self.atom_positions[i,0] - pos2d_screw2[1]
+				theta1[i] = self.compute_theta(dz1,dx1)
+				theta2[i] = self.compute_theta(dz2,dx2)
+
+		print "theta1 and theta2 arrays successfully computed!"
+		
+		# Compute the (z,x,y)-displacements for cutplanes parallel to (x,y,z) directions.
+
+		u_displacement = np.zeros(num_atoms)
+
+		for i in range(0,num_atoms):
+			u_displacement[i] = ( b * (theta1[i]-theta2[i]) ) / (2.0*np.pi)
+
+		np.savetxt("u_displacement.dat",u_displacement)
+		
+		# Carry out the (z,x,y)-displacements.
+
+		u = np.zeros(3)
+
+		for i in range(0,num_atoms):
+			if (cutplane == "x"):
+				u = np.array([0,0,u_displacement[i]])
+			if (cutplane == "y"):
+				u = np.array([u_displacement[i],0,0])
+			if (cutplane == "z"):
+				u = np.array([0,u_displacement[i],0])
+			self.atom_positions[i] = self.translate_single_atom_position_withpbc(self.atom_positions[i],u)
+
+		print "\nScrew dipole introduced with a cutplane parallel to the ", cutplane," direction.\n"
+		
+		
+	
+	
+	
 
 
 	def compute_theta(self,dx,dy):
