@@ -1,0 +1,75 @@
+# --------------------- #
+# Simulation parameters #
+# --------------------- #
+
+# GPU enable this input script
+#package gpu 1
+
+variable T equal 300.0
+variable P equal 0.0
+
+variable latticeConstant equal 2.856
+
+variable seed equal -101
+variable dt equal 0.003
+
+
+
+# --------------------- #
+#      The Script       #
+# --------------------- #
+
+units metal
+dimension 3
+boundary p p p
+
+atom_style atomic
+
+read_data test.data
+
+pair_style eam/fs
+#pair_style eam/fs/gpu
+pair_coeff * * fe_mhsasa.eam.fs Fe
+
+neighbor        2.0 bin
+neigh_modify    delay 10   check yes
+
+thermo 100
+thermo_style custom step elapsed dt ke pe lx ly lz pxx pyy pzz press temp
+
+
+dump 1 all atom 1 traj0_initialConfig.dat
+run 1
+undump 1
+reset_timestep 0
+
+
+
+
+
+
+###                                                                ###
+### Initial heating and pressurising to Tm and Pm using Berendsen  ###
+###                                                                ###
+
+timestep ${dt}
+
+velocity all create ${T} 123456
+
+dump 1 all atom 10 traj1_initialHeating.dat
+
+#fix 1 all temp/berendsen ${T} ${T} 100.0
+#fix 2 all press/berendsen z ${P} ${P} 100.0
+fix 3 all nve
+run 10000
+unfix 3
+#unfix 2
+#unfix 1
+
+undump 1
+
+
+
+
+
+
