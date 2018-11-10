@@ -1,5 +1,6 @@
 # crystalninja
 A tool for creating and modifying crystal structures relevant to materials science.
+Outputs can be used for atomic simulation.
 
 To run, you need to create a *.py script that imports crystal ninja as well as numpy:
 
