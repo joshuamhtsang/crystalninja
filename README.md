@@ -20,7 +20,7 @@ This project uses Python virtualenv to simplify environment consistency.  Simply
 to install the needed dependencies.  If, during development, you introduce new 
 package dependencies, then ensure you generate a new requirements.txt:
 
-> pip3 freeze > requirements.txt
+> pip3 freeze --user > requirements.txt
 
 
 ##################
