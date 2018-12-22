@@ -3,13 +3,12 @@ import sys
 import numpy as np
 
 
-print "Crystal Ninja - let's slice up some crystal!"
+print("Crystal Ninja - let's slice up some crystal!")
 
-print "You shouldn't be 'running' me i.e. $ python crystalninja.py"
-print "Instead, write a script that uses me as a library."
-print "You can try (if test.py is present):"
-print "$ python test.py"
-
+print("You shouldn't be 'running' me i.e. $ python crystalninja.py")
+print("Instead, write a script that uses me as a library.")
+print("You can try (if test.py is present):")
+print("$ python test.py")
 
 
 class box:
@@ -19,10 +18,10 @@ class box:
 		self.y_length = y_length_in
 		self.z_length = z_length_in
 
-		print "The origin is set to: ", self.origin
-		print "The x_length is set to: ", self.x_length
-		print "The y_length is set to: ", self.y_length
-		print "The z_length is set to: ", self.z_length
+		print("The origin is set to: ", self.origin)
+		print("The x_length is set to: ", self.x_length)
+		print("The y_length is set to: ", self.y_length)
+		print("The z_length is set to: ", self.z_length)
 
 		# Work out the positional bounds of the 8 corners of the box.
 		self.boxbound_xlo = self.origin[0]
@@ -42,31 +41,29 @@ class box:
 		self.tilt_xy = 0.0
 		self.tilt_xz = 0.0
 		self.tilt_yz = 0.0
-		
 
 	def create_crystal(self, structure, a, orientx_in, orienty_in, orientz_in):
 
-		print "Creating crystal of structure [", structure, "] within the box."
-
+		print("Creating crystal of structure [", structure, "] within the box.")
 
 		# Set basis atoms for each style.
-		if (structure == "fcc"):
-			print "Initialising FCC basis atoms..."
+		if structure == "fcc":
+			print("Initialising FCC basis atoms...")
 			self.num_basis_atoms = 4
 			self.basis = np.zeros((self.num_basis_atoms,3))
 			self.basis[0] = np.array([0.0, 0.0, 0.0])
 			self.basis[1] = np.array([0.5, 0.5, 0.0])
 			self.basis[2] = np.array([0.0, 0.5, 0.5])
 			self.basis[3] = np.array([0.5, 0.0, 0.5])
-			print self.basis
-		elif (structure == "bcc"):
-			print "Initialising BCC basis atoms..."
+			print(self.basis)
+		elif structure == "bcc":
+			print("Initialising BCC basis atoms...")
 			self.num_basis_atoms = 2
 			self.basis = np.zeros((self.num_basis_atoms,3))
 			self.basis[0] = np.array([0.0, 0.0, 0.0])
 			self.basis[1] = np.array([0.5, 0.5, 0.5])
-		elif (structure == "diamond"):
-			print "Initialising Diamond basis atoms..."
+		elif structure == "diamond":
+			print("Initialising Diamond basis atoms...")
 			self.num_basis_atoms = 8
 			self.basis = np.zeros((self.num_basis_atoms,3))
 			self.basis[0] = np.array([0.0, 0.0, 0.0])
@@ -78,23 +75,23 @@ class box:
 			self.basis[6] = np.array([0.75, 0.25, 0.75])
 			self.basis[7] = np.array([0.75, 0.75, 0.25])
 		else:
-			print "You haven't specified a valid crystal structure."
+			print("You haven't specified a valid crystal structure.")
 			sys.exit(0)
 
 		# Normalise the orientation vectors to get the rotation matrix.
-		self.orientx  = orientx_in
-		self.orienty  = orienty_in
-		self.orientz  = orientz_in
+		self.orientx = orientx_in
+		self.orienty = orienty_in
+		self.orientz = orientz_in
 
-		print "The orientx is set to: ", self.orientx
-		print "The orienty is set to: ", self.orienty
-		print "The orientz is set to: ", self.orientz
+		print("The orientx is set to: ", self.orientx)
+		print("The orienty is set to: ", self.orienty)
+		print("The orientz is set to: ", self.orientz)
 
-		print "Checking that the provides orientx,y,z vectors are sane."
+		print("Checking that the provides orientx,y,z vectors are sane.")
 		self.check_orientxyz_orthogonality()
 		self.check_orientxyz_righthanded()
 
-		print "Normalising the orientation vectors and filling rotation matrix..."
+		print("Normalising the orientation vectors and filling rotation matrix...")
 
 		self.rotaterow = np.zeros((3,3))
 
@@ -104,7 +101,7 @@ class box:
 		self.rotaterow[0,1] = self.orientx[1] / length
 		self.rotaterow[0,2] = self.orientx[2] / length
 
-		print self.rotaterow
+		print(self.rotaterow)
 
 		lensq = self.orienty[0]*self.orienty[0] + self.orienty[1]*self.orienty[1] + self.orienty[2]*self.orienty[2]
 		length = np.sqrt(lensq)
@@ -112,7 +109,7 @@ class box:
 		self.rotaterow[1,1] = self.orienty[1] / length
 		self.rotaterow[1,2] = self.orienty[2] / length
 
-		print self.rotaterow
+		print(self.rotaterow)
 
 		lensq = self.orientz[0]*self.orientz[0] + self.orientz[1]*self.orientz[1] + self.orientz[2]*self.orientz[2]
 		length = np.sqrt(lensq)
@@ -120,38 +117,38 @@ class box:
 		self.rotaterow[2,1] = self.orientz[1] / length
 		self.rotaterow[2,2] = self.orientz[2] / length
 
-		print "The rotation matrix is: \n", self.rotaterow
+		print("The rotation matrix is: \n", self.rotaterow)
 
 		#self.rotaterow = np.linalg.inv(self.rotaterow)
 
-		print "The rotation matrix is: \n", self.rotaterow
+		print("The rotation matrix is: \n", self.rotaterow)
 
 		#sys.exit(0)
 
-		print "Calculating box coordinates of the basis atoms."
+		print("Calculating box coordinates of the basis atoms.")
 
 		self.box_basis = np.zeros((self.num_basis_atoms,3))
 		#print self.box_basis
 
-		for i in range(0,self.num_basis_atoms):
+		for i in range(0, self.num_basis_atoms):
 			self.box_basis[i] = np.matmul(self.rotaterow,self.basis[i])
 			#self.box_basis[i] = np.matmul(self.basis[i],self.rotaterow)
 
-		print self.box_basis
+		print(self.box_basis)
 
 		self.box_basis = np.multiply(self.box_basis, a)
 
-		print "The box_basis is:\n", self.box_basis
+		print("The box_basis is:\n", self.box_basis)
 
 		#sys.exit(0)
 
-		print "Filling the box with atoms..."
+		print("Filling the box with atoms...")
 
 		self.unitcellvector = np.zeros((3,3))
 		self.unitcellvector = np.transpose(self.rotaterow) # Holy shit this is important!
 		self.unitcellvector = np.multiply(self.unitcellvector,a)
 
-		print "The unit cell vector matrix is: \n", self.unitcellvector
+		print("The unit cell vector matrix is: \n", self.unitcellvector)
 
 		#sys.exit(0)
 
@@ -160,12 +157,12 @@ class box:
 
 		box_dimensions_list = [self.x_length, self.y_length, self.z_length]
 		longest_box_length = max(box_dimensions_list)
-		print "The longest box length is: ", longest_box_length
+		print("The longest box length is: ", longest_box_length)
 		max_spawn_index = int( 2*longest_box_length / (a) ) + 1
-		print "max_spawn_index = ", max_spawn_index
+		print("max_spawn_index = ", max_spawn_index)
 
 		for i in range(-max_spawn_index,max_spawn_index):
-			print "i = ", i , "/", max_spawn_index
+			print("i = ", i , "/", max_spawn_index)
 			for j in range(-max_spawn_index,max_spawn_index):
 				for k in range(-max_spawn_index,max_spawn_index):
 					#print "\n(i,j,k) = (", i, ", ", j, ", ", k, ")"
@@ -184,11 +181,8 @@ class box:
 						atom_positions = np.append(atom_positions, new_atom_position, axis=0)
 						#print "atom_positions: \n", atom_positions
 
-
-
-
-		print "atom_positions: \n", atom_positions
-		print "There are ", len(atom_positions), " atomic positions generated."
+		print("atom_positions: \n", atom_positions)
+		print("There are ", len(atom_positions), " atomic positions generated.")
 
 		#sys.exit(0)
 
@@ -214,30 +208,27 @@ class box:
 
 		self.atom_positions = atom_positions
 
-
 	# Check orthogonality of the orientx, orienty and orientz vectors.
 	def check_orientxyz_orthogonality(self):
 		if ( np.dot(self.orientx,self.orienty) != 0 ):
-			print "!ERROR! orientx and orienty vectors must be orthogonal, but those provided are not. Please check! :)"
+			print("!ERROR! orientx and orienty vectors must be orthogonal, but those provided are not. Please check! :)")
 			sys.exit(0)
 		if ( np.dot(self.orientx,self.orientz) != 0 ):
-			print "!ERROR! orientx and orientz vectors must be orthogonal, but those provided are not. Please check! :)"
+			print("!ERROR! orientx and orientz vectors must be orthogonal, but those provided are not. Please check! :)")
 			sys.exit(0)
 		if ( np.dot(self.orienty,self.orientz) != 0 ):
-			print "!ERROR! orienty and orientz vectors must be orthogonal, but those provided are not. Please check! :)"
+			print("!ERROR! orienty and orientz vectors must be orthogonal, but those provided are not. Please check! :)")
 			sys.exit(0)
-
 
 	# Check for right-handedness of the 3 orientx,y,z vectors.  x cross y must be in the same direction as z.
 	def check_orientxyz_righthanded(self):
 		xcrossy = np.cross(self.orientx,self.orienty)
-		print xcrossy
-		print np.dot(xcrossy,self.orientz)
+		print(xcrossy)
+		print(np.dot(xcrossy,self.orientz))
 		if ( np.dot(xcrossy,self.orientz) < 0 ):
-			print "!ERROR! The orientx, orienty and orientz vectors do not form a right-handed set.  Please check!  On your right hand, index finger is x, middle finger is y and thumb is z."
+			print("!ERROR! The orientx, orienty and orientz vectors do not form a right-handed set.  Please check! \
+					On your right hand, index finger is x, middle finger is y and thumb is z.")
 			sys.exit(0)
-
-
 
 	# Trim away atoms that spawned outside the box dimensions.
 	def trim_outsidebox(self, atom_positions):
@@ -264,14 +255,12 @@ class box:
 				continue
 
 
-		print "Deleting ", len(deletion_list), " atoms..."
+		print("Deleting ", len(deletion_list), " atoms...")
 		#print deletion_list
 		atom_positions = np.delete(atom_positions,deletion_list,0)
-		print "There are ", len(atom_positions), " atomic positions left."
+		print("There are ", len(atom_positions), " atomic positions left.")
 
 		return atom_positions
-
-
 
 	# Trim away atoms that will overlap with existing atoms under PBC i.e those atoms right on the further out sides of the box.
 	def trim_pbc_overlap(self, atom_positions):
@@ -298,23 +287,21 @@ class box:
 				continue
 
 
-		print "Deleting ", len(deletion_list), " atoms..."
+		print("Deleting ", len(deletion_list), " atoms...")
 		#print deletion_list
 		atom_positions = np.delete(atom_positions,deletion_list,0)
-		print "There are ", len(atom_positions), " atomic positions left."
+		print("There are ", len(atom_positions), " atomic positions left.")
 
 		return atom_positions
 
-
 	def translate_atom_positions(self, atom_positions, tvec):
-		print "Translating the atomic positions by [",tvec[0],",",tvec[1],",",tvec[2],"]..."
+		print("Translating the atomic positions by [",tvec[0],",",tvec[1],",",tvec[2],"]...")
 
 		atom_positions = atom_positions + tvec
 
-		print "... Translation complete."
+		print("... Translation complete.")
 
 		return atom_positions
-
 
 	def translate_single_atom_position_withpbc(self, x_init, u):
 
@@ -336,14 +323,12 @@ class box:
 
 		return x_final
 
-
-
 	def introduce_screw_dipole_in_xyplane(self, b, xypos_screw1, xypos_screw2):
 		# Introduce a screw dipole such that the line vectors are parallel to the z-axis and the cut-plane is parallel to the x-axis.  See Fig 5.1 of Bulatov and Cai.
 		
 		# Check that both dislocations have the same x-coordinate.  This is necessary because the cut between the two dislocations (the cut-plane) is defined as being parallel to the x-axis.
 		if (xypos_screw1[0] != xypos_screw2[0]):
-			print "!ERROR! When introducing a screw dislocation dipole, the x-coordinates of both dislocations must be the same."
+			print("!ERROR! When introducing a screw dislocation dipole, the x-coordinates of both dislocations must be the same.")
 			sys.exit(0)
 
 		# Work out theta1 and theta2 arrays where:
@@ -364,7 +349,7 @@ class box:
 			theta1[i] = self.compute_theta(dx1,dy1)
 			theta2[i] = self.compute_theta(dx2,dy2)
 
-		print "theta1 and theta2 arrays successfully computed!"
+		print("theta1 and theta2 arrays successfully computed!")
 
 		# Compute the z-displacements.
 
@@ -384,24 +369,22 @@ class box:
 			u = np.array([0,0,u_z[i]])
 			self.atom_positions[i] = self.translate_single_atom_position_withpbc(self.atom_positions[i],u)
 
-		print "\nScrew dipole introduced.\n"
-
-	
+		print("\nScrew dipole introduced.\n")
 	
 	def introduce_screw_dipole_general(self, cutplane, b, pos2d_screw1, pos2d_screw2):
 		
 		# pos2d_screw* are the 2D position of the screw dislocation cores in the (xy, yz, zx) planes for dipoles with cutplanes parallel to (x, y, z) directions.  The axes always obey the right-handed convention.
 		
 		if (cutplane == "x" or cutplane == "y" or cutplane == "z"):
-			print "\nYou are introducing a screw dipole with the cutplane parallel to the ", cutplane, " axis.\n"
+			print("\nYou are introducing a screw dipole with the cutplane parallel to the ", cutplane, " axis.\n")
 		else:
-			print "\nYou have't defined a valid cutplane for the screw dipole!  Please check and do so :)\n"
+			print("\nYou have't defined a valid cutplane for the screw dipole!  Please check and do so :)\n")
 			sys.exit(0)
 		
 		# Check that the pos2d_screw* coordinates are appropriate.
 		if (pos2d_screw1[1] != pos2d_screw2[1]):
-			print "!ERROR! When introducing a screw dislocation dipole parallel to the ", cutplane, " direction, the 2nd coordinate specified for the two screw dislocations must be identical."
-			print "Currently, the 2nd coordinates of the two screw dislocations are: ", pos2d_screw1[1], " and ", pos2d_screw2[1]
+			print("!ERROR! When introducing a screw dislocation dipole parallel to the ", cutplane, " direction, the 2nd coordinate specified for the two screw dislocations must be identical.")
+			print("Currently, the 2nd coordinates of the two screw dislocations are: ", pos2d_screw1[1], " and ", pos2d_screw2[1])
 			sys.exit(0)
 		
 		
@@ -438,7 +421,7 @@ class box:
 				theta1[i] = self.compute_theta(dz1,dx1)
 				theta2[i] = self.compute_theta(dz2,dx2)
 
-		print "theta1 and theta2 arrays successfully computed!"
+		print("theta1 and theta2 arrays successfully computed!")
 		
 		# Compute the (z,x,y)-displacements for cutplanes parallel to (x,y,z) directions.
 
@@ -462,13 +445,7 @@ class box:
 				u = np.array([0,u_displacement[i],0])
 			self.atom_positions[i] = self.translate_single_atom_position_withpbc(self.atom_positions[i],u)
 
-		print "\nScrew dipole introduced with a cutplane parallel to the ", cutplane," direction.\n"
-		
-		
-	
-	
-	
-
+		print("\nScrew dipole introduced with a cutplane parallel to the ", cutplane," direction.\n")
 
 	def compute_theta(self,dx,dy):
 
@@ -481,20 +458,14 @@ class box:
 
 		return tmp
 
-
-
 	def setTiltFactors(self,xy,xz,yz):
 		self.triclinicFlag = True
 		self.tilt_xy = xy
 		self.tilt_xz = xz
 		self.tilt_yz = yz
-		
-
-
-
 
 	def print_lammps_dump_format(self, filename):
-		print "Printing a LAMMPS-style dump file.  This is useful for viewing by OVITO."
+		print("Printing a LAMMPS-style dump file.  This is useful for viewing by OVITO.")
 
 		ff = open(filename, 'w')
 
@@ -519,12 +490,10 @@ class box:
 			zz = self.atom_positions[i,2]
 			ff.write(str(i+1)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
 
-
 		ff.close()
 
-
 	def print_lammps_data_format(self, filename):
-		print "Printing a LAMMPS-style data file.  This file can be read by LAMMPS for an initial configuration using the 'read_data' LAMMPS command."
+		print("Printing a LAMMPS-style data file.  This file can be read by LAMMPS for an initial configuration using the 'read_data' LAMMPS command.")
 
 		ff = open(filename, 'w')
 
@@ -545,6 +514,5 @@ class box:
 			yy = self.atom_positions[i,1]
 			zz = self.atom_positions[i,2]
 			ff.write(str(i+1)+" "+"1"+" "+str(xx)+" "+str(yy)+" "+str(zz)+"\n")
-
 
 		ff.close()
