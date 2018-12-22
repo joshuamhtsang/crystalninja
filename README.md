@@ -32,6 +32,6 @@ To run, you need to create a *.py script that imports crystal ninja as well as n
 	import numpy as np
 	import crystalninja as cn
 
-Look at test.py for an example.  To execute, simply execute in terminal:
+Look at test.py for an example.  To execute, execute in terminal using Python 3:
 
-> python  test.py
+> python3 test.py
