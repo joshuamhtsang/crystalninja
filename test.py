@@ -114,9 +114,9 @@ box1.print_lammps_dump_format("lammpsOut.dat")
 screw1_pos = np.array([19.185,27.98])
 screw2_pos = np.array([57.555,27.98])
 burgersVector = 0.5 * np.array([1,1,1]) * lattice_constant
-print "The Burgers Vector is: ", burgersVector
+print("The Burgers Vector is: ", burgersVector)
 burgersVectorMagnitude = np.linalg.norm(burgersVector)
-print "The magnitude of the Burgers Vector is: ", burgersVectorMagnitude
+print("The magnitude of the Burgers Vector is: ", burgersVectorMagnitude)
 #box1.introduce_screw_dipole_in_xyplane(burgersVectorMagnitude,screw1_pos,screw2_pos)
 box1.introduce_screw_dipole_general("y", burgersVectorMagnitude, screw1_pos, screw2_pos)
 box1.setTiltFactors(0.0,-1.0,0.0)

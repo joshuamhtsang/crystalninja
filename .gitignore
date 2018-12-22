@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# joshua custom rules
+*.dat
+bin/
+include/
+local/
+share/
+*.data
+.idea/
