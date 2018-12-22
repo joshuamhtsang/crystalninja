@@ -1,4 +1,5 @@
-# crystalninja
+# crystalninja README.md
+
 
 ###################
 ### Description ###
@@ -6,6 +7,7 @@
 
 A tool for creating and modifying crystal structures relevant to materials science.
 Outputs can be used for atomic simulation.
+
 
 ########################
 ### virtualenv setup ###
